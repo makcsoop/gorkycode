@@ -1,11 +1,13 @@
 from flask import Flask
 from scripts import note
 
+
+
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    user = "Заготовка"
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    
     return ""
 
 if __name__ == '__main__':
