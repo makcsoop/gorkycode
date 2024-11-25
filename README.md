@@ -1,1 +1,1 @@
-# gorkycode максим лох
+# gorkycode
