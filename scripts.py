@@ -39,3 +39,11 @@ def isvalid_value(*value):
             return False
     else:
         return True
+    
+def get_id(login):
+    base = sqlite3.connect('data/base.db')
+    cursor = base.cursor()
+    id = cursor.execute(f"""SELECT * FROM users WHERE login = '{login}'""").fetchall()[0][0]
+    base.close()
+    return id
+    
