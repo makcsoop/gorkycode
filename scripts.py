@@ -2,7 +2,7 @@ import sqlite3
 
 
 def connect_base():
-    base = sqlite3.connect('data/base.db')
+    base = sqlite3.connect('db/base.db')
     cursor = base.cursor()
     return base, cursor
 
@@ -18,7 +18,7 @@ def check_user(login, password):
 
 
 def isvalid_login(login):
-    base = sqlite3.connect('data/base.db')
+    base = sqlite3.connect('db/base.db')
     cursor = base.cursor()
     all_login = cursor.execute(f"""SELECT * FROM users WHERE login = '{login}'""").fetchall()
     base.close()
@@ -41,7 +41,7 @@ def isvalid_value(*value):
         return True
     
 def get_id(login):
-    base = sqlite3.connect('data/base.db')
+    base = sqlite3.connect('db/base.db')
     cursor = base.cursor()
     id = cursor.execute(f"""SELECT * FROM users WHERE login = '{login}'""").fetchall()[0][0]
     base.close()
