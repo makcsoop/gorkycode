@@ -4,7 +4,7 @@ import sqlalchemy
 import requests
 from flask_login import LoginManager, login_user
 from data import db_session
-from data.users import User
+from data.users import User, Dialog, Message
 from data.db_session import global_init, SqlAlchemyBase
 
 #http://localhost:8000/registration?login=user1&name=max&password=1234&password2=12&email=max@gmail.com
@@ -20,22 +20,23 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+db_session.global_init('db/base.db')
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
-
-db_session.global_init('db/base.db')
-db_sess = db_session.create_session()
 
 
 @app.route('/authorization', methods=['GET'])
 def login():
     session['login'] = ''
     session['role'] = 0
+    session['id'] = -1
     args = request.args
     login = args.get('login')
     password = args.get('password')
+    db_sess = db_session.create_session()
     login_cur = db_sess.query(User).filter(User.login == str(login)).first()
     if len(login) and len(password):
         login_cur = db_sess.query(User).filter(User.login == login, User.password == password).first()
@@ -44,6 +45,7 @@ def login():
         #     return {"flag": "yes"}
         # if check_user(login, password):
             ID = get_id(login)
+            session['id'] = ID
             session['login'] = login
             print(login_cur)
             # session['role'] = get_level_user(login)
@@ -61,10 +63,10 @@ def registration():
     name = args.get('name')
     email = args.get('email')
     password = args.get('password')
+    db_sess = db_session.create_session()
     if not (isvalid_login(login)):
         return {"flag": 0}
     if  isvalid_value(login, password, name):
-        db_sess = db_session.create_session()
         login_cur = db_sess.query(User).filter(User.login == login).first()
         if login_cur:
             print(login_cur)
@@ -100,15 +102,26 @@ def newsfeed():
 
 @app.route("/messenger", methods=['GET'])
 def messenger():
+    ID = session.get("id")
     if ID != -1:
-        pass
+        #http://localhost:8000/messenger
+        search = "%{}%".format(ID)
+        db_sess = db_session.create_session()
+        login_cur = db_sess.query(Dialog).filter(Dialog.id_users.like(search))
+        return {"flag": 1, "dialog": [str(i.id_users) for i in login_cur], "search": search, "ID" : ID}
     else:
         return {"flag": 0}
 
 @app.route("/correspondence", methods=['GET'])
 def correspondence():
     if ID != -1:
-        pass
+        args = request.args
+        id_dialog = args.get('dialog')
+        db_sess = db_session.create_session()
+        login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
+        final = []
+        return {"flag": 1}
+
     else:
         return {"flag": 0}
 

@@ -13,6 +13,23 @@ class User(SqlAlchemyBase):
     name = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String)
     role = sqlalchemy.Column(sqlalchemy.Integer)
+
+class Dialog(SqlAlchemyBase):
+    __tablename__ = 'dialog'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_users = sqlalchemy.Column(sqlalchemy.String)
+
+class Message(SqlAlchemyBase):
+    __tablename__ = 'message'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_dialog = sqlalchemy.Column(sqlalchemy.Integer)
+    id_user = sqlalchemy.Column(sqlalchemy.Integer)
+    text = sqlalchemy.Column(sqlalchemy.String)
+    date = sqlalchemy.Column(sqlalchemy.DateTime)
+
+
     
 
 
