@@ -4,9 +4,10 @@ import sqlalchemy
 import requests
 from flask_login import LoginManager, login_user
 from data import db_session
-from data.users import User, Dialog, Message
+from data.users import User, Dialog, Message, Settings, Newsfeed
 from data.db_session import global_init, SqlAlchemyBase
 
+# яндекс ключ к картам  f9727fb1-f338-4780-b4c4-d639d0a62107
 #http://localhost:8000/registration?login=user1&name=max&password=1234&password2=12&email=max@gmail.com
 
 #http://localhost:8000/authorization?login=user&password=1234
@@ -27,6 +28,7 @@ def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
+db_sess = db_session.create_session()
 
 @app.route('/authorization', methods=['GET'])
 def login():
@@ -36,14 +38,11 @@ def login():
     args = request.args
     login = args.get('login')
     password = args.get('password')
-    db_sess = db_session.create_session()
+    #db_sess = db_session.create_session()
     login_cur = db_sess.query(User).filter(User.login == str(login)).first()
     if len(login) and len(password):
         login_cur = db_sess.query(User).filter(User.login == login, User.password == password).first()
         if login_cur:
-        #     print(login_cur)
-        #     return {"flag": "yes"}
-        # if check_user(login, password):
             ID = get_id(login)
             session['id'] = ID
             session['login'] = login
@@ -63,7 +62,7 @@ def registration():
     name = args.get('name')
     email = args.get('email')
     password = args.get('password')
-    db_sess = db_session.create_session()
+    #db_sess = db_session.create_session()
     if not (isvalid_login(login)):
         return {"flag": 0}
     if  isvalid_value(login, password, name):
@@ -79,11 +78,6 @@ def registration():
         user.role = 1
         db_sess.add(user)
         db_sess.commit()
-        # base, cursor = connect_base()
-        # cursor.execute(
-        #     f"""INSERT INTO users (login, password, name, role, email) VALUES ('{login}', '{password}', '{name}', 1, '{email}')""")
-        # base.commit()
-        # base.close()
         return {"flag": 1}
     else:
         return {"flag": 3} #не все поля заполнины
@@ -95,8 +89,15 @@ def map():
 
 @app.route("/newsfeed", methods=['GET'])
 def newsfeed():
+    # НУЖНО ВЫБРАТЬ КАК ВЫДАВАТЬ ПОСТЫ ЛИБО ПО ПОДПИСКАМ ЛИБО ВСЕ ПУБЛИКАЦИИ ЧЕЛОВ
+    ID = session.get("id")
     if ID != -1:
-        pass
+        login_cur = db_sess.query(Newsfeed).filter(Newsfeed.id_user == ID)
+        final = []
+        for i in login_cur:
+            info_user = db_sess.query(User).filter(User.id == id)
+
+        
     else:
         return {"flag": 0}
 
@@ -106,7 +107,7 @@ def messenger():
     if ID != -1:
         #http://localhost:8000/messenger
         search = "%{}%".format(ID)
-        db_sess = db_session.create_session()
+        #db_sess = db_session.create_session()
         login_cur = db_sess.query(Dialog).filter(Dialog.id_users.like(search))
         return {"flag": 1, "dialog": [str(i.id_users) for i in login_cur], "search": search, "ID" : ID}
     else:
@@ -114,28 +115,34 @@ def messenger():
 
 @app.route("/correspondence", methods=['GET'])
 def correspondence():
+    #http://localhost:8000/correspondence?dialog=1
+    ID = session.get("id")
     if ID != -1:
         args = request.args
         id_dialog = args.get('dialog')
-        db_sess = db_session.create_session()
+        #db_sess = db_session.create_session()
         login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
-        final = []
-        return {"flag": 1}
+        final = [[1 if i.id_user == ID else 0, i.text, i.date] for i in login_cur]
+        final = sorted(final, key=lambda x: x[2])
+        return {"flag": 1, "info": final}
 
     else:
-        return {"flag": 0}
+        return {"flag": ID}
 
 @app.route("/other", methods=['GET'])
 def other():
     if ID != -1:
-        pass
+         pass
     else:
         return {"flag": 0}
 
 @app.route("/profile", methods=['GET'])
 def profile():
+    ID = session.get("id")
     if ID != -1:
-        pass
+        #db_sess = db_session.create_session()
+        login_cur = db_sess.query(User).filter(User.id == ID).first()
+        return {"flag": 1, "name": login_cur.name, "login": login_cur.login, "email": login_cur.email} 
     else:
         return {"flag": 0}
 
@@ -146,7 +153,7 @@ def friends():
     else:
         return {"flag": 0}
 
-@app.route("/communities", methods=['GET'])
+@app.route("/communities",methods=['POST', 'GET'])
 def communities():
     if ID != -1:
         pass
@@ -155,10 +162,16 @@ def communities():
 
 @app.route("/settings", methods=['GET'])
 def settings():
-    if ID != -1:
+    ID = session.get("id")
+    if request.method == 'POST' and ID != -1:
         pass
+        #передать тему и просто поменять значение в базе
     else:
-        return {"flag": 0}
+        if ID != -1:
+            login_cur = db_sess.query(Settings).filter(Settings.id_user == ID).first()
+            return {"flag": 1, "theme": login_cur.theme}
+        else:
+            return {"flag": 0}
     
 
 if __name__ == '__main__':

@@ -14,6 +14,18 @@ class User(SqlAlchemyBase):
     email = sqlalchemy.Column(sqlalchemy.String)
     role = sqlalchemy.Column(sqlalchemy.Integer)
 
+
+class Newsfeed(SqlAlchemyBase):
+    __tablename__ = 'newsfeed'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_user = sqlalchemy.Column(sqlalchemy.Integer)
+    image = sqlalchemy.Column(sqlalchemy.String)
+    text = sqlalchemy.Column(sqlalchemy.String)
+    date = sqlalchemy.Column(sqlalchemy.DateTime)
+    like = sqlalchemy.Column(sqlalchemy.Integer)
+
+
 class Dialog(SqlAlchemyBase):
     __tablename__ = 'dialog'
     id = sqlalchemy.Column(sqlalchemy.Integer,
@@ -30,7 +42,12 @@ class Message(SqlAlchemyBase):
     date = sqlalchemy.Column(sqlalchemy.DateTime)
 
 
-    
+class Settings(SqlAlchemyBase):
+    __tablename__ = 'settings'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_user = sqlalchemy.Column(sqlalchemy.Integer)
+    theme = sqlalchemy.Column(sqlalchemy.Integer)
 
 
 
