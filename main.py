@@ -192,4 +192,4 @@ def settings():
     
 
 if __name__ == '__main__':
-    app.run(port=8000, host='localhost')
+    app.run()
