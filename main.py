@@ -92,12 +92,14 @@ def newsfeed():
     # НУЖНО ВЫБРАТЬ КАК ВЫДАВАТЬ ПОСТЫ ЛИБО ПО ПОДПИСКАМ ЛИБО ВСЕ ПУБЛИКАЦИИ ЧЕЛОВ
     ID = session.get("id")
     if ID != -1:
-        login_cur = db_sess.query(Newsfeed).filter(Newsfeed.id_user == ID)
+        #http://localhost:8000/newsfeed
+        login_cur = db_sess.query(Newsfeed).filter(Newsfeed.id_user == 1)
         final = []
         for i in login_cur:
-            info_user = db_sess.query(User).filter(User.id == id)
-
-        
+            info_user = db_sess.query(User).filter(User.id == 1).first()
+            final.append([info_user.name, i.text, i.image, i.date, i.like])
+        final = sorted(final, key=lambda x: x[3])
+        return {"flag": 1, "info": final}
     else:
         return {"flag": 0}
 
@@ -160,18 +162,33 @@ def communities():
     else:
         return {"flag": 0}
 
-@app.route("/settings", methods=['GET'])
+@app.route("/settings", methods=['GET', 'POST'])
 def settings():
     ID = session.get("id")
+    args = request.args
+    exit = args.get('exit')
+    theme = args.get('theme')
+    vision = args.get('vision')
     if request.method == 'POST' and ID != -1:
-        pass
-        #передать тему и просто поменять значение в базе
-    else:
+        #http://localhost:8000/settings?exit=1&theme=1&vision=1
+        
+        if bool(exit):
+            session['id'] = -1
+            return {"flag": 1, "notes": "вышел из аккунта"} 
+        else:
+            login_cur = db_sess.query(Settings).filter(Settings.id_user == ID).first()
+            login_cur.theme = theme
+            login_cur.vision = vision
+            db_sess.commit()
+            return {"flag": 1, "notes": "поменял настройки"}
+    elif request.method == 'GET':
         if ID != -1:
             login_cur = db_sess.query(Settings).filter(Settings.id_user == ID).first()
-            return {"flag": 1, "theme": login_cur.theme}
+
+            return {"flag": 1, "theme": login_cur.theme, "vision": login_cur.vision}
         else:
             return {"flag": 0}
+   
     
 
 if __name__ == '__main__':

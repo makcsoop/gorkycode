@@ -48,6 +48,7 @@ class Settings(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     id_user = sqlalchemy.Column(sqlalchemy.Integer)
     theme = sqlalchemy.Column(sqlalchemy.Integer)
+    vision = sqlalchemy.Column(sqlalchemy.Integer)
 
 
 
