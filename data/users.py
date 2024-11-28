@@ -50,6 +50,29 @@ class Settings(SqlAlchemyBase):
     theme = sqlalchemy.Column(sqlalchemy.Integer)
     vision = sqlalchemy.Column(sqlalchemy.Integer)
 
+class Friends(SqlAlchemyBase):
+    __tablename__ = 'friends'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_users = sqlalchemy.Column(sqlalchemy.Integer)
+
+
+class Communities(SqlAlchemyBase):
+    __tablename__ = 'communities'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+
+    
+class Feedcommunities(SqlAlchemyBase):
+    __tablename__ = 'feedcommunities'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_communities = sqlalchemy.Column(sqlalchemy.String)
+    image = sqlalchemy.Column(sqlalchemy.String)
+    text = sqlalchemy.Column(sqlalchemy.String)
+    date = sqlalchemy.Column(sqlalchemy.DateTime)
+    like = sqlalchemy.Column(sqlalchemy.Integer)
 
 
 

@@ -4,7 +4,7 @@ import sqlalchemy
 import requests
 from flask_login import LoginManager, login_user
 from data import db_session
-from data.users import User, Dialog, Message, Settings, Newsfeed
+from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities
 from data.db_session import global_init, SqlAlchemyBase
 import datetime
 
@@ -91,15 +91,15 @@ def map():
 @app.route("/newsfeed", methods=['GET'])
 def newsfeed():
     # НУЖНО ВЫБРАТЬ КАК ВЫДАВАТЬ ПОСТЫ ЛИБО ПО ПОДПИСКАМ ЛИБО ВСЕ ПУБЛИКАЦИИ ЧЕЛОВ
-    ID = session.get("id")
-    if ID != -1:
+
+    if True:
         #http://localhost:8000/newsfeed
-        login_cur = db_sess.query(Newsfeed).filter(Newsfeed.id_user == 1)
+        login_cur = db_sess.query(Feedcommunities)
         final = []
         for i in login_cur:
-            info_user = db_sess.query(User).filter(User.id == 1).first()
-            final.append([info_user.name, i.text, i.image, i.date, i.like])
-        final = sorted(final, key=lambda x: x[3])
+            info_user = db_sess.query(Communities).filter(Communities.id == i.id_communities).first()
+            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name}})
+        # final = sorted(final, key=lambda x: x[3])
         return {"flag": 1, "info": final}
     else:
         return {"flag": 0}
@@ -111,8 +111,20 @@ def messenger():
         #http://localhost:8000/messenger
         search = "%{}%".format(ID)
         #db_sess = db_session.create_session()
+        final = []
         login_cur = db_sess.query(Dialog).filter(Dialog.id_users.like(search))
-        return {"flag": 1, "dialog": [str(i.id_users) for i in login_cur], "search": search, "ID" : ID}
+        for i in login_cur:
+            users = str(i.id_users).replace(str(ID), '').replace(',', "").split()
+            name = db_sess.query(User).filter(User.id == users).first().name
+            info = db_sess.query(Message).filter(Message.id_dialog == i.id)
+            texts = sorted(list([j.id_user, j.text, j.data] for j in info), key=lambda x:x[2], reverse=True)
+
+
+            
+            # mes = [[j.id_user, j.text, j.data] for j in info]
+            print(info)
+            final.append({"name": name, "last_text": [j[1] for id, j in enumerate(texts) if id == 0][0]})
+        return {"flag": 1, "dialog": final, "search": search, "ID" : ID}
     else:
         return {"flag": 0}
 
@@ -143,9 +155,10 @@ def correspondence():
         if ID != -1:
             args = request.args
             id_dialog = args.get('dialog')
+            print(id_dialog)
             #db_sess = db_session.create_session()
             login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
-            final = [[1 if i.id_user == ID else 0, i.text, i.date] for i in login_cur]
+            final = [[1 if i.id_user == ID else 0, i.text, i.data] for i in login_cur]
             final = sorted(final, key=lambda x: x[2])
             return {"flag": 1, "info": final}
 
@@ -172,17 +185,51 @@ def profile():
 
 @app.route("/friends", methods=['GET'])
 def friends():
+    #http://localhost:8000/friends
+    ID = session.get("id")
     if ID != -1:
-        pass
+        search = "%{}%".format(ID)
+        login_cur = db_sess.query(Friends).filter(Friends.id_users.like(search))
+        final = []
+        for i in login_cur:
+            users = str(i.id_users).replace(str(ID), '').replace(',', "").split()
+            print(users)
+            info = db_sess.query(User).filter(User.id == int(users[0])).first()
+            final.append([info.name])
+        final.sort()
+        return {"flag": 1, "info": final}
     else:
         return {"flag": 0}
 
 @app.route("/communities",methods=['POST', 'GET'])
 def communities():
+    ID = session.get("id")
     if ID != -1:
-        pass
+        #http://localhost:8000/communities
+        login_cur = db_sess.query(Communities).all()
+        final = [i.name for i in login_cur]
+        return {"flag": 1, "info": final}
     else:
         return {"flag": 0}
+    
+
+@app.route("/feedcommunities",methods=['POST', 'GET'])
+def feedcommunities():
+    ID = session.get("id")
+    if ID != -1:
+        final = []
+        args = request.args
+        id_communities = args.get('communities')
+        login_cur = db_sess.query(Feedcommunities).filter(Feedcommunities.id_communities == id_communities)
+        #print(login_cur)
+        for i in login_cur:
+            name = db_sess.query(Communities).filter(Communities.id == i.id_communities).first().name
+            final.append({"name": name, "text": i.text, "like": i.like, "date": i.date, "image": i.image})
+    
+        return {"flag": 1, "info": final}
+    else:
+        return {"flag": 0}
+
 
 @app.route("/settings", methods=['GET', 'POST'])
 def settings():
