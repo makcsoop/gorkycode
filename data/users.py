@@ -39,7 +39,7 @@ class Message(SqlAlchemyBase):
     id_dialog = sqlalchemy.Column(sqlalchemy.Integer)
     id_user = sqlalchemy.Column(sqlalchemy.Integer)
     text = sqlalchemy.Column(sqlalchemy.String)
-    date = sqlalchemy.Column(sqlalchemy.DateTime)
+    data = sqlalchemy.Column(sqlalchemy.DateTime)
 
 
 class Settings(SqlAlchemyBase):

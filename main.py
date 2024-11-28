@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_user
 from data import db_session
 from data.users import User, Dialog, Message, Settings, Newsfeed
 from data.db_session import global_init, SqlAlchemyBase
+import datetime
 
 # яндекс ключ к картам  f9727fb1-f338-4780-b4c4-d639d0a62107
 #http://localhost:8000/registration?login=user1&name=max&password=1234&password2=12&email=max@gmail.com
@@ -115,21 +116,42 @@ def messenger():
     else:
         return {"flag": 0}
 
-@app.route("/correspondence", methods=['GET'])
+@app.route("/correspondence", methods=['POST', 'GET'])
 def correspondence():
     #http://localhost:8000/correspondence?dialog=1
     ID = session.get("id")
-    if ID != -1:
+    
+    if request.method == 'POST' and ID != -1:
+        #http://localhost:8000/correspondence?dialog=1&text=привет
         args = request.args
-        id_dialog = args.get('dialog')
-        #db_sess = db_session.create_session()
-        login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
-        final = [[1 if i.id_user == ID else 0, i.text, i.date] for i in login_cur]
-        final = sorted(final, key=lambda x: x[2])
-        return {"flag": 1, "info": final}
+        dialog = args.get("dialog")
+        text = args.get('text')
+        #image = args.get("image") 
+        #date = args.get("date")
+        add_message = Message()
+        add_message.id_dialog = int(dialog)
+        add_message.id_user = int(ID)
+        add_message.text = text
+        add_message.data = datetime.datetime.now().date()
+        #.strftime("%Y-%m-%d")
+        db_sess.add(add_message)
+        db_sess.commit()
+        print('-------------------')
+        return {"flag": 1}
 
-    else:
-        return {"flag": ID}
+    elif request.method == 'GET':
+        if ID != -1:
+            args = request.args
+            id_dialog = args.get('dialog')
+            #db_sess = db_session.create_session()
+            login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
+            final = [[1 if i.id_user == ID else 0, i.text, i.date] for i in login_cur]
+            final = sorted(final, key=lambda x: x[2])
+            return {"flag": 1, "info": final}
+
+        else:
+            return {"flag": 0, "ID": ID}
+    return {"flag": 0, "ID": ID}
 
 @app.route("/other", methods=['GET'])
 def other():
