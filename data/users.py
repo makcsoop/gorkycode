@@ -70,9 +70,15 @@ class Feedcommunities(SqlAlchemyBase):
                            primary_key=True, autoincrement=True)
     id_communities = sqlalchemy.Column(sqlalchemy.String)
     image = sqlalchemy.Column(sqlalchemy.String)
+    url = sqlalchemy.Column(sqlalchemy.String)
     text = sqlalchemy.Column(sqlalchemy.String)
     date = sqlalchemy.Column(sqlalchemy.DateTime)
     like = sqlalchemy.Column(sqlalchemy.Integer)
+    x = sqlalchemy.Column(sqlalchemy.Integer)
+    y = sqlalchemy.Column(sqlalchemy.Integer)
+    address = sqlalchemy.Column(sqlalchemy.String)
+
+
 
 class ProblemPoints(SqlAlchemyBase):
     __tablename__ = 'problempoints'

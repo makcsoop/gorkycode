@@ -98,7 +98,7 @@ def newsfeed():
         final = []
         for i in login_cur:
             info_user = db_sess.query(Communities).filter(Communities.id == i.id_communities).first()
-            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name}})
+            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": i.url if i.url != None else ""}})
         # final = sorted(final, key=lambda x: x[3])
         return {"flag": 1, "info": final}
     else:
