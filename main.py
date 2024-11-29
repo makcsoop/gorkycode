@@ -102,7 +102,7 @@ def newsfeed():
             info_user = db_sess.query(Communities).filter(Communities.id == i.id_communities).first()
             name_ava = db_sess.query(Image).filter(Image.id == info_user.id_image).first().url
             foto_post = db_sess.query(Image).filter(Image.id == i.id_image).first().url
-            print(name_ava, foto_post)
+
             final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": str(foto_post) if len(foto_post) != 0 else "", "avatar": str(name_ava) if len(name_ava) != 0 else ""}})
         # final = sorted(final, key=lambda x: x[3])
         return {"flag": 1, "info": final}
@@ -159,7 +159,6 @@ def correspondence():
         if ID != -1 and str(ID) != 'None':
             args = request.args
             id_dialog = args.get('dialog')
-            print(id_dialog)
             #db_sess = db_session.create_session()
             login_cur = db_sess.query(Message).filter(Message.id_dialog == id_dialog)
             final = [{"who_user": 1 if i.id_user == ID else 0, "text": i.text, "data": i.data} for i in login_cur]
