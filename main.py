@@ -296,6 +296,24 @@ def parking():
     #http://localhost:8000/parking
     login_cur = db_sess.query(Parking)
     return {"flag": 1, "points":[{"x": i.x, "y": i.y, "description": i.description} for i in login_cur]}
+
+
+@app.route("/getpoint", methods=['GET', 'POST'])
+def getpoint():
+    #http://localhost:8000/getpoint?address=Нижний Новогод, ННГУ
+   
+    args = request.args
+    toponym_to_find = args.get('address').replace(" ", " ")
+    
+    geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+    geocoder_params = {
+    "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+    "geocode": toponym_to_find,
+    "format": "json"}
+    response = requests.get(geocoder_api_server, params=geocoder_params).json()
+    info = str(response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]).split()
+    x, y = info[1], info[0]
+    return {"x":x,"y":y}
     
 
 if __name__ == '__main__':
