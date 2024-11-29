@@ -100,10 +100,10 @@ def newsfeed():
         final = []
         for i in login_cur:
             info_user = db_sess.query(Communities).filter(Communities.id == i.id_communities).first()
-            name_ava = "db_sess.query(Image).filter(Image.id == info_user.id_image).first()"
+            name_ava = db_sess.query(Image).filter(Image.id == info_user.id_image).first().url
             foto_post = db_sess.query(Image).filter(Image.id == i.id_image).first().url
             print(name_ava, foto_post)
-            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": NAME_SERVER+"/images/"+str(foto_post) if len(foto_post) != 0 else "", "avatar": NAME_SERVER+"/images/"+str(name_ava) if len(name_ava) != 0 else ""}})
+            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": str(foto_post) if len(foto_post) != 0 else "", "avatar": str(name_ava) if len(name_ava) != 0 else ""}})
         # final = sorted(final, key=lambda x: x[3])
         return {"flag": 1, "info": final}
     else:
