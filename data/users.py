@@ -74,6 +74,18 @@ class Feedcommunities(SqlAlchemyBase):
     date = sqlalchemy.Column(sqlalchemy.DateTime)
     like = sqlalchemy.Column(sqlalchemy.Integer)
 
+class ProblemPoints(SqlAlchemyBase):
+    __tablename__ = 'problempoints'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    x = sqlalchemy.Column(sqlalchemy.Integer)
+    y = sqlalchemy.Column(sqlalchemy.Integer)
+    description = sqlalchemy.Column(sqlalchemy.String)
+    address = sqlalchemy.Column(sqlalchemy.String)
+    
+
+
+
 
 
 
