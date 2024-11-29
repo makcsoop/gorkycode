@@ -9,6 +9,7 @@ from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Commu
 from data.db_session import global_init, SqlAlchemyBase
 import datetime
 
+
 # яндекс ключ к картам  f9727fb1-f338-4780-b4c4-d639d0a62107
 #http://localhost:8000/registration?login=user1&name=max&password=1234&password2=12&email=max@gmail.com
 
@@ -42,7 +43,7 @@ def login():
     login = args.get('login')
     password = args.get('password')
     #db_sess = db_session.create_session()
-    login_cur = db_sess.query(User).filter(User.login == str(login)).first()
+    login_cur = db_sess.query(User).filter(User.login == str(login), User.activity == 1).first()
     if len(login) and len(password):
         login_cur = db_sess.query(User).filter(User.login == login, User.password == password).first()
         if login_cur:
@@ -274,12 +275,12 @@ def problempoints():
         x = args.get('x')
         y = args.get('y')
         description = args.get('description')
-        address = args.get('address')
+        address = get_name_street(x,y)
         point = ProblemPoints()
         point.x = x
         point.y = y
         point.description = description
-        point.address = address
+        point.address = str(address)
         db_sess.add(point)
         db_sess.commit()
         return {"flag": 1}

@@ -103,6 +103,7 @@ class Parking(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String)
 
 
+
 class Role(SqlAlchemyBase):
     __tablename__ = 'role'
     id = sqlalchemy.Column(sqlalchemy.Integer,
