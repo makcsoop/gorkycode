@@ -82,7 +82,18 @@ class ProblemPoints(SqlAlchemyBase):
     y = sqlalchemy.Column(sqlalchemy.Integer)
     description = sqlalchemy.Column(sqlalchemy.String)
     address = sqlalchemy.Column(sqlalchemy.String)
-    
+
+
+class Parking(SqlAlchemyBase):
+    __tablename__ = 'parking'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    x = sqlalchemy.Column(sqlalchemy.Integer)
+    y = sqlalchemy.Column(sqlalchemy.Integer)
+    description = sqlalchemy.Column(sqlalchemy.String)
+
+
+
 
 
 

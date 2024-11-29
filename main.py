@@ -4,7 +4,7 @@ import sqlalchemy
 import requests
 from flask_login import LoginManager, login_user
 from data import db_session
-from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints
+from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints, Parking
 from data.db_session import global_init, SqlAlchemyBase
 import datetime
 
@@ -264,12 +264,33 @@ def settings():
 
 @app.route("/problempoints", methods=['GET', 'POST'])
 def problempoints():
+    if request.method == 'POST':
+        #http://localhost:8000/problempoints?x=56.320068&y=44.000863&description=яма в асфальте&address=ННГУ
+        args = request.args
+        x = args.get('x')
+        y = args.get('y')
+        description = args.get('description')
+        address = args.get('address')
+        point = ProblemPoints()
+        point.x = x
+        point.y = y
+        point.description = description
+        point.address = address
+        db_sess.add(point)
+        db_sess.commit()
+        return {"flag": 1}
+    elif request.method == 'GET':
+        login_cur = db_sess.query(ProblemPoints)
+        return {"flag": 1, "points":[{"x": i.x, "y": i.y, "address": i.address, "description": i.description} for i in login_cur]}
+    else:
+        return {"flag": 0}
     #http://localhost:8000/problempoints
-    login_cur = db_sess.query(ProblemPoints)
-    return {"points":[{"x": i.x, "y": i.y, "address": i.address, "description": i.description} for i in login_cur]}
     
-
-   
+@app.route("/parking", methods=['GET', 'POST'])
+def parking():
+    #http://localhost:8000/parking
+    login_cur = db_sess.query(Parking)
+    return {"flag": 1, "points":[{"x": i.x, "y": i.y, "description": i.description} for i in login_cur]}
     
 
 if __name__ == '__main__':
