@@ -9,10 +9,12 @@ class User(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     login = sqlalchemy.Column(sqlalchemy.String)
+    id_image = sqlalchemy.Column(sqlalchemy.Integer)
     password = sqlalchemy.Column(sqlalchemy.String)
     name = sqlalchemy.Column(sqlalchemy.String)
     email = sqlalchemy.Column(sqlalchemy.String)
     role = sqlalchemy.Column(sqlalchemy.Integer)
+    activity = sqlalchemy.Column(sqlalchemy.Integer)
 
 
 class Newsfeed(SqlAlchemyBase):
@@ -61,7 +63,9 @@ class Communities(SqlAlchemyBase):
     __tablename__ = 'communities'
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
+    id_image = sqlalchemy.Column(sqlalchemy.Integer)
     name = sqlalchemy.Column(sqlalchemy.String)
+    activity = sqlalchemy.Column(sqlalchemy.Integer)
 
     
 class Feedcommunities(SqlAlchemyBase):
@@ -69,8 +73,8 @@ class Feedcommunities(SqlAlchemyBase):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     id_communities = sqlalchemy.Column(sqlalchemy.String)
-    image = sqlalchemy.Column(sqlalchemy.String)
-    url = sqlalchemy.Column(sqlalchemy.String)
+    id_image = sqlalchemy.Column(sqlalchemy.String)
+    # url = sqlalchemy.Column(sqlalchemy.String)
     text = sqlalchemy.Column(sqlalchemy.String)
     date = sqlalchemy.Column(sqlalchemy.DateTime)
     like = sqlalchemy.Column(sqlalchemy.Integer)
@@ -97,6 +101,22 @@ class Parking(SqlAlchemyBase):
     x = sqlalchemy.Column(sqlalchemy.Integer)
     y = sqlalchemy.Column(sqlalchemy.Integer)
     description = sqlalchemy.Column(sqlalchemy.String)
+
+
+class Role(SqlAlchemyBase):
+    __tablename__ = 'role'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    level = sqlalchemy.Column(sqlalchemy.Integer)
+
+
+class Image(SqlAlchemyBase):
+    __tablename__ = 'image'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    url = sqlalchemy.Column(sqlalchemy.String)
+    
 
 
 

@@ -2,9 +2,10 @@ from flask import Flask, request, session
 from scripts import *
 import sqlalchemy
 import requests
+import urllib.request
 from flask_login import LoginManager, login_user
 from data import db_session
-from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints, Parking
+from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints, Parking, Role, Image
 from data.db_session import global_init, SqlAlchemyBase
 import datetime
 
@@ -15,6 +16,7 @@ import datetime
 
 test = {"login": "user", "password" : "1234", "password2": "1234", "name": "", "email":""}
 ENTRANCE = False
+NAME_SERVER = "http://localhost:8000"
 ID = -1
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -98,7 +100,10 @@ def newsfeed():
         final = []
         for i in login_cur:
             info_user = db_sess.query(Communities).filter(Communities.id == i.id_communities).first()
-            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": i.url if i.url != None else ""}})
+            name_ava = "db_sess.query(Image).filter(Image.id == info_user.id_image).first()"
+            foto_post = db_sess.query(Image).filter(Image.id == i.id_image).first().url
+            print(name_ava, foto_post)
+            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": NAME_SERVER+"/images/"+str(foto_post) if len(foto_post) != 0 else "", "avatar": NAME_SERVER+"/images/"+str(name_ava) if len(name_ava) != 0 else ""}})
         # final = sorted(final, key=lambda x: x[3])
         return {"flag": 1, "info": final}
     else:
