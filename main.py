@@ -314,6 +314,17 @@ def getpoint():
     info = str(response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["Point"]["pos"]).split()
     x, y = info[1], info[0]
     return {"x":x,"y":y}
+
+
+@app.route("/getaddress", methods=['GET', 'POST'])
+def getaddress():
+    #http://localhost:8000/getpoint?address=Нижний Новогод, ННГУ
+   
+    args = request.args
+    x = args.get('x')
+    y = args.get('y')
+    top = get_name_street(x, y)
+    return {"address": top}
     
 
 if __name__ == '__main__':
