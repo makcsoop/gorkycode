@@ -119,6 +119,44 @@ class Image(SqlAlchemyBase):
     url = sqlalchemy.Column(sqlalchemy.String)
     
 
+class Wait_Communities(SqlAlchemyBase):
+    __tablename__ = 'waitcommunities'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_user = sqlalchemy.Column(sqlalchemy.Integer)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    target = sqlalchemy.Column(sqlalchemy.String)
+    image = sqlalchemy.Column(sqlalchemy.String)
+    activity = sqlalchemy.Column(sqlalchemy.Integer)
+
+
+class Logging(SqlAlchemyBase):
+    __tablename__ = 'logging'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_log = sqlalchemy.Column(sqlalchemy.Integer)
+    data = sqlalchemy.Column(sqlalchemy.DateTime)
+    notes = sqlalchemy.Column(sqlalchemy.String)
+
+
+class TypeLog(SqlAlchemyBase):
+    __tablename__ = 'typelog'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    type = sqlalchemy.Column(sqlalchemy.String)
+
+
+class ParkZone(SqlAlchemyBase):
+    __tablename__ = 'parkzone'
+    id = sqlalchemy.Column(sqlalchemy.Integer,
+                           primary_key=True, autoincrement=True)
+    id_pair = sqlalchemy.Column(sqlalchemy.Integer)
+    x = sqlalchemy.Column(sqlalchemy.Integer)
+    y = sqlalchemy.Column(sqlalchemy.Integer)
+    description = sqlalchemy.Column(sqlalchemy.String)
+
+    
+    
 
 
 
