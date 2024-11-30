@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user
 from data import db_session
 from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints, Parking, Role, Image, Wait_Communities, Logging, TypeLog, ParkZone
 from data.db_session import global_init, SqlAlchemyBase
-import datetime
+from datetime import datetime
 
 
 # яндекс ключ к картам  f9727fb1-f338-4780-b4c4-d639d0a62107
@@ -140,11 +140,11 @@ def newsfeed():
             name_ava = db_sess.query(Image).filter(Image.id == info_user.id_image).first().url
             foto_post = db_sess.query(Image).filter(Image.id == i.id_image).first().url
 
-            final.append({"information":  {"text":  i.text, "date": i.date, "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": str(foto_post) if len(foto_post) != 0 else "", "avatar": str(name_ava) if len(name_ava) != 0 else ""}})
+            final.append({"information":  {"text":  i.text, "date": change_date(i.date), "like": i.like, "name" : info_user.name, "x": i.x, "y": i.y, "address": i.address, "url": str(foto_post) if len(foto_post) != 0 else "", "avatar": str(name_ava) if len(name_ava) != 0 else ""}})
             log = Logging()
             log.id_log = 1
             log.notes = f"Complite get all feednews"
-            log.data = datetime.datetime.now()
+            log.data = datetime.now()
             db_sess.add(log)
             db_sess.commit()
         # final = sorted(final, key=lambda x: x[3])
@@ -439,7 +439,7 @@ def getpoint():
     #http://localhost:8000/getpoint?address=Нижний Новогод, ННГУ
    
     args = request.args
-    toponym_to_find = args.get('address').replace(" ", " ")
+    toponym_to_find = args.get('address').replace(" ", "+")
     
     geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
     geocoder_params = {
@@ -454,13 +454,15 @@ def getpoint():
 
 @app.route("/getaddress", methods=['GET', 'POST'])
 def getaddress():
-    #http://localhost:8000/getpoint?address=Нижний Новогод, ННГУ
+    #http://localhost:8000/getaddress?x=56.80507&y=43.35186
    
     args = request.args
     x = args.get('x')
     y = args.get('y')
     top = get_name_street(x, y)
     return {"address": top}
+
+
 
 
 @app.route("/parkzone", methods=['GET', 'POST'])

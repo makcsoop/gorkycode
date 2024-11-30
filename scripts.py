@@ -1,5 +1,6 @@
 import sqlite3
 import requests
+from datetime import datetime
 
 
 def connect_base():
@@ -55,7 +56,14 @@ def get_name_street(x, y):
     if response:
         # Преобразуем ответ в json-объект
         json_response = response.json()
-        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["text"]
-        print(toponym)
-        return toponym
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"]
+
+        final =  ""
+        for i in toponym[3:]:
+            final += i["name"] + ", "
+        return final[:-2]
     return ""
+
+def change_date(date):
+    n = datetime.strptime(str(date), "%Y-%m-%d %H:%M:%S.%f").strftime('%H:%M %d.%m.%Y')
+    return n
