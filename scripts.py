@@ -51,14 +51,16 @@ def get_id(login):
     
 
 def get_name_street(x, y):
-    geocoder_request = f"https://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={y},{x}&format=json"
+    geocoder_request = f"https://geocode-maps.yandex.ru/1.x/?apikey=06ac2964-1c74-4510-ba0f-4bd4b962a22a&geocode={y},{x}&format=json"
     response = requests.get(geocoder_request)
+
     if response:
         # Преобразуем ответ в json-объект
         json_response = response.json()
+        print(response)
         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"]
 
-        final =  ""
+        final = ""
         for i in toponym[3:]:
             final += i["name"] + ", "
         return final[:-2]

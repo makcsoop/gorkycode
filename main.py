@@ -7,7 +7,7 @@ from flask_login import LoginManager, login_user
 from data import db_session
 from data.users import User, Dialog, Message, Settings, Newsfeed, Friends, Communities, Feedcommunities, ProblemPoints, Parking, Role, Image, Wait_Communities, Logging, TypeLog, ParkZone
 from data.db_session import global_init, SqlAlchemyBase
-from datetime import datetime
+import datetime
 
 
 # яндекс ключ к картам  f9727fb1-f338-4780-b4c4-d639d0a62107
@@ -226,7 +226,7 @@ def correspondence():
             #final = sorted(final, key=lambda x: x[2])
             log = Logging()
             log.id_log = 1
-            log.notes = f"Get all correspondence id_dialog = {dialog}"
+            log.notes = f"Get all correspondence id_dialog = {log.id_log}"
             log.data = datetime.datetime.now()
             db_sess.add(log)
             db_sess.commit()
@@ -235,14 +235,14 @@ def correspondence():
         else:
             log = Logging()
             log.id_log = 4
-            log.notes = f"Error id_dialog = {dialog}"
+            log.notes = f"Error id_dialog = {log.id_log}"
             log.data = datetime.datetime.now()
             db_sess.add(log)
             db_sess.commit()
             return {"flag": 0, "ID": ID}
     log = Logging()
     log.id_log = 4
-    log.notes = f"Error id_dialog = {dialog}"
+    log.notes = f"Error id_dialog = {log.id_log}"
     log.data = datetime.datetime.now()
     db_sess.add(log)
     db_sess.commit()
@@ -443,7 +443,7 @@ def getpoint():
     
     geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
     geocoder_params = {
-    "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+    "apikey": "06ac2964-1c74-4510-ba0f-4bd4b962a22a",
     "geocode": toponym_to_find,
     "format": "json"}
     response = requests.get(geocoder_api_server, params=geocoder_params).json()
@@ -454,7 +454,7 @@ def getpoint():
 
 @app.route("/getaddress", methods=['GET', 'POST'])
 def getaddress():
-    #http://localhost:8000/getaddress?x=56.80507&y=43.35186
+    #http://localhost:8000/getaddress?x=&y=43.35186
    
     args = request.args
     x = args.get('x')
@@ -480,4 +480,4 @@ def parkzone():
     
 
 if __name__ == '__main__':
-    app.run(port=8000, host='localhost')
+    app.run(port=3000, host='127.0.0.1')
